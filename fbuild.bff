@@ -1,5 +1,5 @@
-.Root = '$_WORKING_DIR_$'
-.BuildSystemRoot = '$_CURRENT_BFF_DIR_$'
+.Root = 'C:/Users/Simeon/Documents/nebula device 4'
+.BuildSystemRoot = 'C:/Users/Simeon/Documents/nd4-build-system'
 .BuildRoot = '$Root$/build-fastbuild'
 Print("N4DC BFF root=$Root$ build=$BuildRoot$ shader=$Root$/shaders")
 .GeneratedRoot = '$BuildRoot$/generated'
@@ -43,25 +43,25 @@ If( .N4DCEnableASAN ) {
     .N4DCRelWithDebInfoAsanCompile = '/fsanitize=address'
 }
 
-.QtAsanPrefix = ''
+.QtAsanPrefix = 'D:/QT/6.11.1/2026_64-asan-relwithdebinfo-clang22'
 .QtStandardPrefix = ''
-.QtHostPrefix = ''
+.QtHostPrefix = 'D:/QT/6.11.1/build-host-6.11.1'
 .N4DCDebugQtRuntimePrefix = '$QtAsanPrefix$'
 .N4DCReleaseQtRuntimePrefix = '$QtStandardPrefix$'
 .N4DCRelWithDebInfoQtRuntimePrefix = '$QtAsanPrefix$'
-.QtHostBin = '$QtHostPrefix$/bin'
+.QtHostBin = 'D:/QT/6.11.1/build-host-6.11.1/qtbase/bin'
 .MocOptions = '"%1" -o "%2"'
-.ClangBin = ''
-.ClangCompiler = 'clang-cl.exe'
-.ClangLinker = 'lld-link.exe'
-.ClangLibrarian = 'llvm-lib.exe'
-.Python = 'python'
+.ClangBin = 'C:/Program Files/LLVM/bin'
+.ClangCompiler = '$ClangBin$/clang-cl.exe'
+.ClangLinker = '$ClangBin$/lld-link.exe'
+.ClangLibrarian = '$ClangBin$/llvm-lib.exe'
+.Python = 'C:/Users/Simeon/miniconda3/python.exe'
 .VulkanSdk = ''
 .MsvcInclude = ''
 .WindowsSdkInclude = ''
-.WindowsSdkLib = ''
-.WindowsSdkUcrtLib = ''
-.MsvcLib = ''
+.WindowsSdkLib = 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64'
+.WindowsSdkUcrtLib = 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/ucrt/x64'
+.MsvcLib = 'C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/lib/x64'
 .VulkanRoot = '$Root$/libs/VULKAN/1.4.341.1'
 .VulkanInclude = '$VulkanRoot$/Include'
 .VulkanLib = '$VulkanRoot$/Lib/vulkan-1.lib'
@@ -83,10 +83,10 @@ If( .N4DCEnableASAN ) {
 .TracyInclude = '$Root$/libs/tracy/release/include/tracy'
 .TracyLib = '$Root$/libs/tracy/release/lib/TracyClient.lib'
 .AsanResource = ''
-.AsanLinkerLib = ''
-.AsanRuntime = ''
-.AsanThunk = ''
-.AsanDll = ''
+.AsanLinkerLib = 'C:/Program Files/LLVM/lib/clang/22/lib/windows'
+.AsanRuntime = '$AsanLinkerLib$/clang_rt.asan_dynamic-x86_64.lib'
+.AsanThunk = '$AsanLinkerLib$/clang_rt.asan_dynamic_runtime_thunk-x86_64.lib'
+.AsanDll = '$AsanLinkerLib$/clang_rt.asan_dynamic-x86_64.dll'
 .Glslang = 'glslangValidator.exe'
 
 #if file_exists("fbuild.local.bff")
@@ -94,28 +94,29 @@ If( .N4DCEnableASAN ) {
 #endif
 
 .SystemSourceIncludeFlags = '/I"$MsvcInclude$" /I"$WindowsSdkInclude$/ucrt" /I"$WindowsSdkInclude$/shared" /I"$WindowsSdkInclude$/um" /I"$WindowsSdkInclude$/winrt"'
-.CommonSourceIncludeFlags = '$SystemSourceIncludeFlags$ /I. /I./src /I./libs/glm /I./build-fastbuild/generated /I./libs/VULKAN/1.4.341.1/Include /I./libs/VVMemoryAllocator/include /I./libs/VKBootstrap/release/include /I./libs/glfw3.4/include /I./libs/tracy/release/include/tracy'
+.CommonSourceIncludeFlags = '$SystemSourceIncludeFlags$ /I. /I./src /I./build-fastbuild/generated /external:I./libs/glm /external:I./libs/VULKAN/1.4.341.1/Include /external:I./libs/VVMemoryAllocator/include /external:I./libs/VKBootstrap/release/include /external:I./libs/glfw3.4/include /external:I./libs/tracy/release/include/tracy'
+.CommonExternalWarningFlags = '/external:W0'
 If( .N4DCEnableKtx2 ) {
-    .CommonSourceIncludeFlags = '$CommonSourceIncludeFlags$ /I./libs/KTX-Software/debug/include'
+    .CommonSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I./libs/KTX-Software/debug/include'
 }
-.DebugSourceIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCDebugQtRuntimePrefix$/include" /I"$N4DCDebugQtRuntimePrefix$/include/QtCore" /I"$N4DCDebugQtRuntimePrefix$/include/QtGui" /I"$N4DCDebugQtRuntimePrefix$/include/QtWidgets" /I"$N4DCDebugQtRuntimePrefix$/include/QtSvg" /I"$N4DCDebugQtRuntimePrefix$/include/QtConcurrent"'
-.ReleaseSourceIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCReleaseQtRuntimePrefix$/include" /I"$N4DCReleaseQtRuntimePrefix$/include/QtCore" /I"$N4DCReleaseQtRuntimePrefix$/include/QtGui" /I"$N4DCReleaseQtRuntimePrefix$/include/QtWidgets" /I"$N4DCReleaseQtRuntimePrefix$/include/QtSvg" /I"$N4DCReleaseQtRuntimePrefix$/include/QtConcurrent"'
-.RelWithDebInfoSourceIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtCore" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtGui" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtWidgets" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtSvg" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtConcurrent"'
+.DebugSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$N4DCDebugQtRuntimePrefix$/include" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtCore" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtGui" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtWidgets" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtSvg" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtConcurrent"'
+.ReleaseSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$N4DCReleaseQtRuntimePrefix$/include" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtCore" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtGui" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtWidgets" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtSvg" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtConcurrent"'
+.RelWithDebInfoSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include" /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtCore" /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtGui" /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtWidgets" /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtSvg" /external:I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtConcurrent"'
 
-.CommonDefines = '/DWIN32 /D_WINDOWS /DNOMINMAX /DGLM_FORCE_DEPTH_ZERO_TO_ONE /DGLM_FORCE_RADIANS /DKHRONOS_STATIC /DN4DC_ENABLE_ANIMATIONS=$N4DCEnableAnimationsValue$ /DN4DC_ENABLE_PARTICLES=$N4DCEnableParticlesValue$ /DN4DC_STANDALONE_MODE=$N4DCStandaloneModeValue$ /DN4DC_VULKAN_CHECK=$N4DCVulkanCheckValue$ /DN4DC_DISABLE_LOG_WINDOW=$N4DCDisableLogWindowValue$ /DN4DC_HAS_KTX2=$N4DCHasKtx2Value$ /DVK_NO_PROTOTYPES /DVK_USE_PLATFORM_WIN32_KHR /D_CRT_SECURE_NO_WARNINGS /D_ITERATOR_DEBUG_LEVEL=0 /DSOURCE_DIR=\"$Root$\" /DSHADER_DIR=\"$Root$/shaders\" $N4DCDisableLoggingDefine$'
+.CommonDefines = '/DWIN32 /D_WINDOWS /DNOMINMAX /DGLM_FORCE_DEPTH_ZERO_TO_ONE /DGLM_FORCE_RADIANS /DKHRONOS_STATIC /DN4DC_ENABLE_ANIMATIONS=$N4DCEnableAnimationsValue$ /DN4DC_ENABLE_PARTICLES=$N4DCEnableParticlesValue$ /DN4DC_STANDALONE_MODE=$N4DCStandaloneModeValue$ /DN4DC_VULKAN_CHECK=$N4DCVulkanCheckValue$ /DN4DC_DISABLE_LOG_WINDOW=$N4DCDisableLogWindowValue$ /DN4DC_HAS_KTX2=$N4DCHasKtx2Value$ /DVK_NO_PROTOTYPES /DVK_USE_PLATFORM_WIN32_KHR /D_CRT_SECURE_NO_WARNINGS /D_ITERATOR_DEBUG_LEVEL=0 /DSOURCE_DIR="$Root$" /DSHADER_DIR="$Root$/shaders" $N4DCDisableLoggingDefine$'
 .DebugDefines = '$CommonDefines$ /DN4DC_DEBUG_BUILD $N4DCDebugAsanDefines$ $N4DCDebugTracyDefines$'
 .ReleaseDefines = '$CommonDefines$'
 .RelWithDebInfoDefines = '$CommonDefines$ $N4DCRelWithDebInfoAsanDefines$ $N4DCRelWithDebInfoTracyDefines$'
-.DebugCompilerOptions = '\"%1\" /nologo /TP $DebugDefines$ /W4 $DebugSourceIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
-.ReleaseCompilerOptions = '\"%1\" /nologo /TP $ReleaseDefines$ -w $ReleaseSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo\"%2\"'
-.RelWithDebInfoCompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /W4 $RelWithDebInfoSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
-.DebugCCompilerOptions = '\"%1\" /nologo /TC $DebugDefines$ $CommonSourceIncludeFlags$ /Zi /Ob0 /Od /RTC1 /std:c11 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
-.ReleaseCCompilerOptions = '\"%1\" /nologo /TC $ReleaseDefines$ $CommonSourceIncludeFlags$ /O2 /Ob3 /Oi /GL /std:c11 /MD -c /Fo\"%2\"'
-.RelWithDebInfoCCompilerOptions = '\"%1\" /nologo /TC $RelWithDebInfoDefines$ $CommonSourceIncludeFlags$ /O2 /Ob3 /Oi /GL /Zi /std:c11 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
-.DebugLinkerOptions = '%1 /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /INCREMENTAL /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
-.ReleaseLinkerOptions = '%1 /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
-.RelWithDebInfoLinkerOptions = '%1 /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
-.LibrarianOptions = '/OUT:"%2" %1'
+.DebugCompilerOptions = '"%1" /nologo /TP $DebugDefines$ /W4 $DebugSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo"%2"'
+.ReleaseCompilerOptions = '"%1" /nologo /TP $ReleaseDefines$ -w $ReleaseSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo"%2"'
+.RelWithDebInfoCompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ /W4 $RelWithDebInfoSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
+.DebugCCompilerOptions = '"%1" /nologo /TC $DebugDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /Zi /Ob0 /Od /RTC1 /std:c11 /MD $N4DCDebugAsanCompile$ -c /Fo"%2"'
+.ReleaseCCompilerOptions = '"%1" /nologo /TC $ReleaseDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /std:c11 /MD -c /Fo"%2"'
+.RelWithDebInfoCCompilerOptions = '"%1" /nologo /TC $RelWithDebInfoDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /Zi /std:c11 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
+.DebugLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /INCREMENTAL /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
+.ReleaseLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
+.RelWithDebInfoLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
+.LibrarianOptions = '/OUT:"%2" "%1"'
 
 Compiler('ClangCl')
 {
@@ -145,7 +146,7 @@ Settings
     '$Root$/src/Editor/QtDockingHost.cpp'
     '$Root$/src/Editor/ViewportWindow.cpp'
 }
-.CompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /W4 $CommonSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
+.CompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ /W4 $CommonSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
 ObjectList('N4DC_Idlc_Objects')
 {
     .Compiler = 'ClangCl'
@@ -343,10 +344,12 @@ ObjectList('ND4C_C_Debug')
 Library('ND4C_Debug')
 {
     .Compiler = 'ClangCl'
-    .CompilerOptions = '\"%1\" /c /Fo\"%2\"'
+    .CompilerOptions = '"%1" /c /Fo"%2"'
     .CompilerOutputPath = '$BuildRoot$/Debug/obj/ND4C_Library'
     .Librarian = '$ClangLibrarian$'
     .LibrarianType = 'msvc'
+    .LibrarianAllowResponseFile = true
+    .LibrarianForceResponseFile = true
     .LibrarianOptions = '$LibrarianOptions$'
     .LibrarianOutput = '$BuildRoot$/Debug/ND4Cd.lib'
     .LibrarianAdditionalInputs = { 'ND4C_Cpp_Debug' 'ND4C_C_Debug' 'ND4C_Vma_Debug' }
@@ -379,10 +382,12 @@ ObjectList('ND4C_C_Release')
 Library('ND4C_Release')
 {
     .Compiler = 'ClangCl'
-    .CompilerOptions = '\"%1\" /c /Fo\"%2\"'
+    .CompilerOptions = '"%1" /c /Fo"%2"'
     .CompilerOutputPath = '$BuildRoot$/Release/obj/ND4C_Library'
     .Librarian = '$ClangLibrarian$'
     .LibrarianType = 'msvc'
+    .LibrarianAllowResponseFile = true
+    .LibrarianForceResponseFile = true
     .LibrarianOptions = '$LibrarianOptions$'
     .LibrarianOutput = '$BuildRoot$/Release/ND4D.lib'
     .LibrarianAdditionalInputs = { 'ND4C_Cpp_Release' 'ND4C_C_Release' 'ND4C_Vma_Release' }
@@ -415,10 +420,12 @@ ObjectList('ND4C_C_RelWithDebInfo')
 Library('ND4C_RelWithDebInfo')
 {
     .Compiler = 'ClangCl'
-    .CompilerOptions = '\"%1\" /c /Fo\"%2\"'
+    .CompilerOptions = '"%1" /c /Fo"%2"'
     .CompilerOutputPath = '$BuildRoot$/RelWithDebInfo/obj/ND4C_Library'
     .Librarian = '$ClangLibrarian$'
     .LibrarianType = 'msvc'
+    .LibrarianAllowResponseFile = true
+    .LibrarianForceResponseFile = true
     .LibrarianOptions = '$LibrarianOptions$'
     .LibrarianOutput = '$BuildRoot$/RelWithDebInfo/ND4D.lib'
     .LibrarianAdditionalInputs = { 'ND4C_Cpp_RelWithDebInfo' 'ND4C_C_RelWithDebInfo' 'ND4C_Vma_RelWithDebInfo' }
@@ -487,7 +494,7 @@ function DefineQtRuntimeDlls( .DeploymentTargetName .OutputRoot .QtPrefix .PreBu
     }
 }
 
-function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .AsanLibraries .AsanTargets .ValidationTargets .UnityName .ConfigCompilerOptions .ConfigLinkerOptions .ConfigQtRuntimePrefix .ConfigLinker .ProjectRoot .VulkanSdkRoot .AsanDllPath .SystemLibraries )
+function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .AsanLibraries .AsanTargets .ValidationTargets .ShaderDependencies .UnityName .ConfigCompilerOptions .ConfigLinkerOptions .ConfigQtRuntimePrefix .ConfigLinker .ProjectRoot .VulkanSdkRoot .AsanDllPath .SystemLibraries )
 {
     ObjectList('N4Editor_Objects_$ConfigName$')
     {
@@ -495,7 +502,7 @@ function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .Asa
         .CompilerOptions = .ConfigCompilerOptions
         .CompilerOutputPath = '$OutputRoot$/obj/N4Editor'
         .CompilerInputUnity = .UnityName
-        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4DC_Idlc_GpuTypes' .N4DCShaderDependencies }
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4DC_Idlc_GpuTypes' .ShaderDependencies }
     }
     Executable('N4Editor_Binary_$ConfigName$')
     {
@@ -533,7 +540,7 @@ function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .Asa
     }
     Alias('N4Editor_$ConfigName$')
     {
-        .Targets = { 'N4Editor_Binary_$ConfigName$' 'N4Editor_Stylesheet_$ConfigName$' 'N4Editor_ValidationDll_$ConfigName$' 'N4Editor_ValidationJson_$ConfigName$' 'N4Editor_QtDlls_$ConfigName$' 'N4Editor_QtPlatform_$ConfigName$' .ValidationTargets .AsanTargets }
+        .Targets = { 'N4Editor_Binary_$ConfigName$' 'N4Editor_Stylesheet_$ConfigName$' 'N4Editor_QtDlls_$ConfigName$' 'N4Editor_QtPlatform_$ConfigName$' .ValidationTargets .AsanTargets }
     }
 }
 If( .N4DCEnableASAN ) {
@@ -568,9 +575,9 @@ If( .N4DCEnableVulkanValidation ) {
     .ReleaseValidationTargets = { 'N4Editor_ValidationDll_Release' 'N4Editor_ValidationJson_Release' }
     .RelWithDebInfoValidationTargets = { 'N4Editor_ValidationDll_RelWithDebInfo' 'N4Editor_ValidationJson_RelWithDebInfo' }
 }
-DefineEditor('Debug' '$BuildRoot$/Debug' .EditorQtLibrariesDebug .EditorTracyLibraries .DebugAsanLibraries .DebugAsanTargets .DebugValidationTargets 'N4Editor_Unity_Debug' '$DebugCompilerOptions$' '$DebugLinkerOptions$' .N4DCDebugQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
-DefineEditor('Release' '$BuildRoot$/Release' .EditorQtLibrariesRelease .EmptyLibraries .EmptyAsanLibraries .EmptyAsanTargets .ReleaseValidationTargets 'N4Editor_Unity_Release' '$ReleaseCompilerOptions$' '$ReleaseLinkerOptions$' .N4DCReleaseQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
-DefineEditor('RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' .EditorQtLibrariesRelWithDebInfo .EditorTracyLibraries .RelWithDebInfoAsanLibraries .RelWithDebInfoAsanTargets .RelWithDebInfoValidationTargets 'N4Editor_Unity_RelWithDebInfo' '$RelWithDebInfoCompilerOptions$' '$RelWithDebInfoLinkerOptions$' .N4DCRelWithDebInfoQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+DefineEditor('Debug' '$BuildRoot$/Debug' .EditorQtLibrariesDebug .EditorTracyLibraries .DebugAsanLibraries .DebugAsanTargets .DebugValidationTargets .N4DCShaderDependencies 'N4Editor_Unity_Debug' '$DebugCompilerOptions$' '$DebugLinkerOptions$' .N4DCDebugQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+DefineEditor('Release' '$BuildRoot$/Release' .EditorQtLibrariesRelease .EmptyLibraries .EmptyAsanLibraries .EmptyAsanTargets .ReleaseValidationTargets .N4DCShaderDependencies 'N4Editor_Unity_Release' '$ReleaseCompilerOptions$' '$ReleaseLinkerOptions$' .N4DCReleaseQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+DefineEditor('RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' .EditorQtLibrariesRelWithDebInfo .EditorTracyLibraries .RelWithDebInfoAsanLibraries .RelWithDebInfoAsanTargets .RelWithDebInfoValidationTargets .N4DCShaderDependencies 'N4Editor_Unity_RelWithDebInfo' '$RelWithDebInfoCompilerOptions$' '$RelWithDebInfoLinkerOptions$' .N4DCRelWithDebInfoQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
 
 #include "fbuild.optional.bff"
 
