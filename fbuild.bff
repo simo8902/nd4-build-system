@@ -1,8 +1,12 @@
-.Root = "C:/Users/Simeon/Documents/nebula device 4"
+.Root = '$_WORKING_DIR_$'
+.BuildSystemRoot = '$_CURRENT_BFF_DIR_$'
 .BuildRoot = '$Root$/build-fastbuild'
 Print("N4DC BFF root=$Root$ build=$BuildRoot$ shader=$Root$/shaders")
 .GeneratedRoot = '$BuildRoot$/generated'
 #include "fbuild.options.bff"
+
+.N4DCEnableShaderCompilation = false
+.N4DCEnableVulkanValidation = false
 
 .N4DCEnableAnimationsValue = '1'
 .N4DCEnableParticlesValue = '0'
@@ -39,23 +43,25 @@ If( .N4DCEnableASAN ) {
     .N4DCRelWithDebInfoAsanCompile = '/fsanitize=address'
 }
 
-.QtAsanPrefix = 'D:/QT/6.11.1/2026_64-asan-relwithdebinfo-clang22'
-.QtStandardPrefix = 'C:/Qt/6.11.0/msvc2022_64'
-.QtHostPrefix = 'D:/QT/6.11.1/build-host-6.11.1/qtbase'
+.QtAsanPrefix = ''
+.QtStandardPrefix = ''
+.QtHostPrefix = ''
 .N4DCDebugQtRuntimePrefix = '$QtAsanPrefix$'
 .N4DCReleaseQtRuntimePrefix = '$QtStandardPrefix$'
 .N4DCRelWithDebInfoQtRuntimePrefix = '$QtAsanPrefix$'
 .QtHostBin = '$QtHostPrefix$/bin'
 .MocOptions = '"%1" -o "%2"'
-.ClangBin = 'C:/Program Files/LLVM/bin'
-.ClangCompiler = '$ClangBin$/clang-cl.exe'
-.ClangLinker = '$ClangBin$/lld-link.exe'
-.ClangLibrarian = '$ClangBin$/llvm-lib.exe'
-.Python = 'C:/Users/Simeon/AppData/Local/Programs/Python/Python312/python.exe'
-.VulkanSdk = 'C:/VulkanSDK/1.4.341.1'
-.WindowsSdkLib = 'C:/PROGRA~2/WINDOW~1/10/Lib/100226~1.0/um/x64'
-.WindowsSdkUcrtLib = 'C:/PROGRA~2/WINDOW~1/10/Lib/100226~1.0/ucrt/x64'
-.MsvcLib = 'C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/lib/x64'
+.ClangBin = ''
+.ClangCompiler = 'clang-cl.exe'
+.ClangLinker = 'lld-link.exe'
+.ClangLibrarian = 'llvm-lib.exe'
+.Python = 'python'
+.VulkanSdk = ''
+.MsvcInclude = ''
+.WindowsSdkInclude = ''
+.WindowsSdkLib = ''
+.WindowsSdkUcrtLib = ''
+.MsvcLib = ''
 .VulkanRoot = '$Root$/libs/VULKAN/1.4.341.1'
 .VulkanInclude = '$VulkanRoot$/Include'
 .VulkanLib = '$VulkanRoot$/Lib/vulkan-1.lib'
@@ -76,14 +82,19 @@ If( .N4DCEnableASAN ) {
 .FbxZlibRelease = '$FbxRoot$/lib/x64/release/zlib-md.lib'
 .TracyInclude = '$Root$/libs/tracy/release/include/tracy'
 .TracyLib = '$Root$/libs/tracy/release/lib/TracyClient.lib'
-.AsanResource = '$ClangBin$/../lib/clang/22/lib/windows'
-.AsanLinkerLib = 'C:/PROGRA~1/LLVM/lib/clang/22/lib/windows'
-.AsanRuntime = 'C:/PROGRA~1/LLVM/lib/clang/22/lib/windows/clang_rt.asan_dynamic-x86_64.lib'
-.AsanThunk = 'C:/PROGRA~1/LLVM/lib/clang/22/lib/windows/clang_rt.asan_dynamic_runtime_thunk-x86_64.lib'
-.AsanDll = '$AsanResource$/clang_rt.asan_dynamic-x86_64.dll'
-.Glslang = '$VulkanSdk$/Bin/glslangValidator.exe'
+.AsanResource = ''
+.AsanLinkerLib = ''
+.AsanRuntime = ''
+.AsanThunk = ''
+.AsanDll = ''
+.Glslang = 'glslangValidator.exe'
 
-.CommonSourceIncludeFlags = '/I. /I./src /I./libs/glm /I./build-fastbuild/generated /I./libs/VULKAN/1.4.341.1/Include /I./libs/VVMemoryAllocator/include /I./libs/VKBootstrap/release/include /I./libs/glfw3.4/include /I./libs/tracy/release/include/tracy'
+#if file_exists("fbuild.local.bff")
+#include "fbuild.local.bff"
+#endif
+
+.SystemSourceIncludeFlags = '/I"$MsvcInclude$" /I"$WindowsSdkInclude$/ucrt" /I"$WindowsSdkInclude$/shared" /I"$WindowsSdkInclude$/um" /I"$WindowsSdkInclude$/winrt"'
+.CommonSourceIncludeFlags = '$SystemSourceIncludeFlags$ /I. /I./src /I./libs/glm /I./build-fastbuild/generated /I./libs/VULKAN/1.4.341.1/Include /I./libs/VVMemoryAllocator/include /I./libs/VKBootstrap/release/include /I./libs/glfw3.4/include /I./libs/tracy/release/include/tracy'
 If( .N4DCEnableKtx2 ) {
     .CommonSourceIncludeFlags = '$CommonSourceIncludeFlags$ /I./libs/KTX-Software/debug/include'
 }
@@ -139,7 +150,7 @@ ObjectList('N4DC_Idlc_Objects')
 {
     .Compiler = 'ClangCl'
     .CompilerOutputPath = '$BuildRoot$/tools/idlc/obj'
-    .CompilerInputFiles = '$Root$/tools/idlc/idlc.cpp'
+    .CompilerInputFiles = '$BuildSystemRoot$/idlc/idlc.cpp'
 }
 
 Executable('N4DC_Idlc_Binary')
@@ -155,7 +166,7 @@ Executable('N4DC_Idlc_Binary')
 Exec('N4DC_Idlc_GpuTypes')
 {
     .ExecExecutable = '$BuildRoot$/tools/idlc/N4DC_Idlc.exe'
-    .ExecInput = { '$Root$/schemas/gpu.n4idl' '$Root$/tools/idlc/idlc.cpp' }
+    .ExecInput = { '$Root$/schemas/gpu.n4idl' '$BuildSystemRoot$/idlc/idlc.cpp' }
     .ExecOutput = '$GeneratedRoot$/n4dc_gpu_types.stamp'
     .ExecArguments = '--input "schemas/gpu.n4idl" --cpp-output "$GeneratedRoot$/N4DCGpuTypes.generated.h" --glsl-output "$GeneratedRoot$/n4dc_gpu_types.glsl" --stamp "%2"'
     .ExecWorkingDir = '$Root$'
@@ -183,10 +194,16 @@ Exec('N4DC_EmbeddedIcons')
     .ExecWorkingDir = '$Root$'
 }
 
+.N4DCShaderDependencies = { }
+If( .N4DCEnableShaderCompilation ) {
+    .N4DCShaderDependencies = { 'N4DC_Shaders' }
+}
+
+If( .N4DCEnableShaderCompilation ) {
 Exec('N4DC_Shaders')
 {
     .ExecExecutable = '$Python$'
-    .ExecInput = { '$Root$/tools/compile-shaders.py' '$Root$/schemas/gpu.n4idl' '$Root$/tools/idlc/idlc.cpp' }
+    .ExecInput = { '$Root$/tools/compile-shaders.py' '$Root$/schemas/gpu.n4idl' '$BuildSystemRoot$/idlc/idlc.cpp' }
     .ExecInputPath = '$Root$/shaders'
     .ExecInputPattern = { 'shaders.cfg' '*.vert' '*.frag' '*.comp' '*.glsl' }
     .ExecInputPathRecurse = true
@@ -194,6 +211,7 @@ Exec('N4DC_Shaders')
     .ExecArguments = '"tools/compile-shaders.py" --config "shaders/shaders.cfg" --root "shaders" --glslang "$Glslang$" --include-root "$GeneratedRoot$" --stamp "%2"'
     .ExecWorkingDir = '$Root$'
     .PreBuildDependencies = 'N4DC_Idlc_GpuTypes'
+}
 }
 
 Exec('N4Editor_Moc_AnimationWindow')
@@ -304,7 +322,7 @@ ObjectList('ND4C_Cpp_Debug')
     .Compiler = 'ClangCl'
     .CompilerOutputPath = '$BuildRoot$/Debug/obj/ND4C'
     .CompilerInputUnity = 'N4DC_Unity_Debug'
-    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' 'N4DC_Shaders' }
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' .N4DCShaderDependencies }
 }
 .CompilerOptions = '$DebugCompilerOptions$'
 ObjectList('ND4C_Vma_Debug')
@@ -320,7 +338,7 @@ ObjectList('ND4C_C_Debug')
     .Compiler = 'ClangCl'
     .CompilerOutputPath = '$BuildRoot$/Debug/obj/ND4C'
     .CompilerInputFiles = '$VulkanInclude$/Volk/volk.c'
-    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Shaders' }
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' .N4DCShaderDependencies }
 }
 Library('ND4C_Debug')
 {
@@ -340,7 +358,7 @@ ObjectList('ND4C_Cpp_Release')
     .Compiler = 'ClangCl'
     .CompilerOutputPath = '$BuildRoot$/Release/obj/ND4C'
     .CompilerInputUnity = 'N4DC_Unity_Release'
-    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' 'N4DC_Shaders' }
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' .N4DCShaderDependencies }
 }
 .CompilerOptions = '$ReleaseCompilerOptions$'
 ObjectList('ND4C_Vma_Release')
@@ -376,7 +394,7 @@ ObjectList('ND4C_Cpp_RelWithDebInfo')
     .Compiler = 'ClangCl'
     .CompilerOutputPath = '$BuildRoot$/RelWithDebInfo/obj/ND4C'
     .CompilerInputUnity = 'N4DC_Unity_RelWithDebInfo'
-    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' 'N4DC_Shaders' }
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_Idlc_GpuTypes' .N4DCShaderDependencies }
 }
 .CompilerOptions = '$RelWithDebInfoCompilerOptions$'
 ObjectList('ND4C_Vma_RelWithDebInfo')
@@ -469,7 +487,7 @@ function DefineQtRuntimeDlls( .DeploymentTargetName .OutputRoot .QtPrefix .PreBu
     }
 }
 
-function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .AsanLibraries .AsanTargets .UnityName .ConfigCompilerOptions .ConfigLinkerOptions .ConfigQtRuntimePrefix .ConfigLinker .ProjectRoot .VulkanSdkRoot .AsanDllPath .SystemLibraries )
+function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .AsanLibraries .AsanTargets .ValidationTargets .UnityName .ConfigCompilerOptions .ConfigLinkerOptions .ConfigQtRuntimePrefix .ConfigLinker .ProjectRoot .VulkanSdkRoot .AsanDllPath .SystemLibraries )
 {
     ObjectList('N4Editor_Objects_$ConfigName$')
     {
@@ -477,7 +495,7 @@ function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .Asa
         .CompilerOptions = .ConfigCompilerOptions
         .CompilerOutputPath = '$OutputRoot$/obj/N4Editor'
         .CompilerInputUnity = .UnityName
-        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4DC_Idlc_GpuTypes' 'N4DC_Shaders' }
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4DC_Idlc_GpuTypes' .N4DCShaderDependencies }
     }
     Executable('N4Editor_Binary_$ConfigName$')
     {
@@ -515,7 +533,7 @@ function DefineEditor( .ConfigName .OutputRoot .QtLibraries .TracyLibraries .Asa
     }
     Alias('N4Editor_$ConfigName$')
     {
-        .Targets = { 'N4Editor_Binary_$ConfigName$' 'N4Editor_Stylesheet_$ConfigName$' 'N4Editor_ValidationDll_$ConfigName$' 'N4Editor_ValidationJson_$ConfigName$' 'N4Editor_QtDlls_$ConfigName$' 'N4Editor_QtPlatform_$ConfigName$' .AsanTargets }
+        .Targets = { 'N4Editor_Binary_$ConfigName$' 'N4Editor_Stylesheet_$ConfigName$' 'N4Editor_ValidationDll_$ConfigName$' 'N4Editor_ValidationJson_$ConfigName$' 'N4Editor_QtDlls_$ConfigName$' 'N4Editor_QtPlatform_$ConfigName$' .ValidationTargets .AsanTargets }
     }
 }
 If( .N4DCEnableASAN ) {
@@ -542,9 +560,17 @@ If( .N4DCEnableASAN ) {
     ^DebugAsanTargets = { 'N4Editor_AsanDll_Debug' }
     ^RelWithDebInfoAsanTargets = { 'N4Editor_AsanDll_RelWithDebInfo' }
 }
-DefineEditor('Debug' '$BuildRoot$/Debug' .EditorQtLibrariesDebug .EditorTracyLibraries .DebugAsanLibraries .DebugAsanTargets 'N4Editor_Unity_Debug' '$DebugCompilerOptions$' '$DebugLinkerOptions$' .N4DCDebugQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
-DefineEditor('Release' '$BuildRoot$/Release' .EditorQtLibrariesRelease .EmptyLibraries .EmptyAsanLibraries .EmptyAsanTargets 'N4Editor_Unity_Release' '$ReleaseCompilerOptions$' '$ReleaseLinkerOptions$' .N4DCReleaseQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
-DefineEditor('RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' .EditorQtLibrariesRelWithDebInfo .EditorTracyLibraries .RelWithDebInfoAsanLibraries .RelWithDebInfoAsanTargets 'N4Editor_Unity_RelWithDebInfo' '$RelWithDebInfoCompilerOptions$' '$RelWithDebInfoLinkerOptions$' .N4DCRelWithDebInfoQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+.DebugValidationTargets = { }
+.ReleaseValidationTargets = { }
+.RelWithDebInfoValidationTargets = { }
+If( .N4DCEnableVulkanValidation ) {
+    .DebugValidationTargets = { 'N4Editor_ValidationDll_Debug' 'N4Editor_ValidationJson_Debug' }
+    .ReleaseValidationTargets = { 'N4Editor_ValidationDll_Release' 'N4Editor_ValidationJson_Release' }
+    .RelWithDebInfoValidationTargets = { 'N4Editor_ValidationDll_RelWithDebInfo' 'N4Editor_ValidationJson_RelWithDebInfo' }
+}
+DefineEditor('Debug' '$BuildRoot$/Debug' .EditorQtLibrariesDebug .EditorTracyLibraries .DebugAsanLibraries .DebugAsanTargets .DebugValidationTargets 'N4Editor_Unity_Debug' '$DebugCompilerOptions$' '$DebugLinkerOptions$' .N4DCDebugQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+DefineEditor('Release' '$BuildRoot$/Release' .EditorQtLibrariesRelease .EmptyLibraries .EmptyAsanLibraries .EmptyAsanTargets .ReleaseValidationTargets 'N4Editor_Unity_Release' '$ReleaseCompilerOptions$' '$ReleaseLinkerOptions$' .N4DCReleaseQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
+DefineEditor('RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' .EditorQtLibrariesRelWithDebInfo .EditorTracyLibraries .RelWithDebInfoAsanLibraries .RelWithDebInfoAsanTargets .RelWithDebInfoValidationTargets 'N4Editor_Unity_RelWithDebInfo' '$RelWithDebInfoCompilerOptions$' '$RelWithDebInfoLinkerOptions$' .N4DCRelWithDebInfoQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
 
 #include "fbuild.optional.bff"
 
