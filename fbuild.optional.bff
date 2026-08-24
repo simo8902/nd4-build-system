@@ -1,0 +1,337 @@
+function DefineQtDeployment( .TargetName .OutputRoot .QtPrefix )
+{
+    Copy('$TargetName$_Stylesheet')
+    {
+        .Source = '$Root$/src/Editor/EditorStyle.qss'
+        .Dest = '$OutputRoot$/EditorStyle.qss'
+        .PreBuildDependencies = .TargetName
+    }
+    DefineQtRuntimeDlls(.TargetName + '_QtDlls' .OutputRoot .QtPrefix .TargetName)
+
+    If( .N4DCEnableASAN )
+    {
+        Copy('$TargetName$_AsanDll')
+        {
+            .Source = '$AsanDll$'
+            .Dest = .OutputRoot + '/clang_rt.asan_dynamic-x86_64.dll'
+            .PreBuildDependencies = .TargetName
+        }
+    }
+    Copy('$TargetName$_QtPlatform')
+    {
+        .Source = .QtPrefix + '/plugins/platforms/qwindows.dll'
+        .Dest = .OutputRoot + '/platforms/qwindows.dll'
+        .PreBuildDependencies = .TargetName
+    }
+}
+
+function DefineModelPreviewerDeployment( .TargetName .OutputRoot .QtPrefix .FbxRuntimeConfiguration )
+{
+    DefineQtDeployment(.TargetName .OutputRoot .QtPrefix)
+    Copy(.TargetName + '_FbxDll')
+    {
+        .Source = '$Root$/libs/autodesk-fbx-2020.3.10/lib/x64/' + .FbxRuntimeConfiguration + '/libfbxsdk.dll'
+        .Dest = .OutputRoot + '/libfbxsdk.dll'
+        .PreBuildDependencies = .TargetName
+    }
+}
+
+.MapEditorSources =
+{
+    '$Root$/N4MapEditor.cpp'
+    '$Root$/src/Assets/Map/MapWriter.cpp'
+    '$Root$/src/Editor/Docking/DockLayout.cpp'
+    '$Root$/src/Editor/Docking/DockWorkspace.cpp'
+    '$Root$/src/Editor/EditorTabManager.cpp'
+    '$Root$/src/MapEditor/EditorIconRegistry.cpp'
+    '$Root$/src/MapEditor/MapEditorMapIO.cpp'
+    '$Root$/src/MapEditor/MapEditorViewport.cpp'
+    '$Root$/src/MapEditor/MapEditorWindow.cpp'
+    '$GeneratedRoot$/qt/moc_MapEditorViewport.cpp'
+    '$GeneratedRoot$/qt/moc_MapEditorWindow.cpp'
+    '$GeneratedRoot$/qt/rcc_editor_icons.cpp'
+}
+
+.ModelPreviewerSources =
+{
+    '$Root$/N4ModelPreviewer.cpp'
+    '$Root$/src/Editor/Docking/DockLayout.cpp'
+    '$Root$/src/Editor/Docking/DockWorkspace.cpp'
+    '$Root$/src/Editor/EditorTabManager.cpp'
+    '$Root$/src/ModelPreviewer/ModelPreviewerDocument.cpp'
+    '$Root$/src/ModelPreviewer/DdsTexture.cpp'
+    '$Root$/src/ModelPreviewer/ModelPreviewerExporter.cpp'
+    '$Root$/src/ModelPreviewer/ModelPreviewerWindow.cpp'
+    '$GeneratedRoot$/qt/moc_ModelPreviewerWindow.cpp'
+}
+
+If( .N4DCBuildMapEditor )
+{
+    Exec('N4MapEditor_Moc_MapEditorViewport')
+    {
+        .ExecExecutable = '$QtHostBin$/moc.exe'
+        .ExecInput = '$Root$/src/MapEditor/MapEditorViewport.h'
+        .ExecOutput = '$GeneratedRoot$/qt/moc_MapEditorViewport.cpp'
+        .ExecArguments = '$MocOptions$'
+    }
+    Exec('N4MapEditor_Moc_MapEditorWindow')
+    {
+        .ExecExecutable = '$QtHostBin$/moc.exe'
+        .ExecInput = '$Root$/src/MapEditor/MapEditorWindow.h'
+        .ExecOutput = '$GeneratedRoot$/qt/moc_MapEditorWindow.cpp'
+        .ExecArguments = '$MocOptions$'
+    }
+    Exec('N4MapEditor_Rcc')
+    {
+        .ExecExecutable = '$QtHostBin$/rcc.exe'
+        .ExecInput = '$Root$/src/MapEditor/editor_icons.qrc'
+        .ExecOutput = '$GeneratedRoot$/qt/rcc_editor_icons.cpp'
+        .ExecArguments = '"%1" -name editor_icons -o "%2"'
+    }
+
+    .MapEditorQtLibrariesDebug = .EditorQtLibrariesDebug
+    .MapEditorQtLibrariesRelease = .EditorQtLibrariesRelease
+    .MapEditorQtLibrariesRelWithDebInfo = .EditorQtLibrariesRelWithDebInfo
+
+    Unity('N4MapEditor_Unity_Debug')
+    {
+        .UnityInputFiles = .MapEditorSources
+        .UnityOutputPath = '$BuildRoot$/Debug/unity/N4MapEditor'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4MapEditor_Moc_MapEditorViewport' 'N4MapEditor_Moc_MapEditorWindow' 'N4MapEditor_Rcc' }
+    }
+    Unity('N4MapEditor_Unity_Release')
+    {
+        .UnityInputFiles = .MapEditorSources
+        .UnityOutputPath = '$BuildRoot$/Release/unity/N4MapEditor'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4MapEditor_Moc_MapEditorViewport' 'N4MapEditor_Moc_MapEditorWindow' 'N4MapEditor_Rcc' }
+    }
+    Unity('N4MapEditor_Unity_RelWithDebInfo')
+    {
+        .UnityInputFiles = .MapEditorSources
+        .UnityOutputPath = '$BuildRoot$/RelWithDebInfo/unity/N4MapEditor'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4MapEditor_Moc_MapEditorViewport' 'N4MapEditor_Moc_MapEditorWindow' 'N4MapEditor_Rcc' }
+    }
+
+    .MapEditorDebugCompilerOptions = '%1 /nologo /TP $DebugDefines$ /DN4DC_MAP_EDITOR=1 /W4 $DebugSourceIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo%2'
+    .MapEditorReleaseCompilerOptions = '%1 /nologo /TP $ReleaseDefines$ /DN4DC_MAP_EDITOR=1 -w $ReleaseSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo%2'
+    .MapEditorRelWithDebInfoCompilerOptions = '%1 /nologo /TP $RelWithDebInfoDefines$ /DN4DC_MAP_EDITOR=1 /W4 $RelWithDebInfoSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo%2'
+
+    ObjectList('N4MapEditor_Objects_Debug')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$MapEditorDebugCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/Debug/obj/N4MapEditor'
+        .CompilerInputUnity = 'N4MapEditor_Unity_Debug'
+    }
+    ObjectList('N4MapEditor_Objects_Release')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$MapEditorReleaseCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/Release/obj/N4MapEditor'
+        .CompilerInputUnity = 'N4MapEditor_Unity_Release'
+    }
+    ObjectList('N4MapEditor_Objects_RelWithDebInfo')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$MapEditorRelWithDebInfoCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/RelWithDebInfo/obj/N4MapEditor'
+        .CompilerInputUnity = 'N4MapEditor_Unity_RelWithDebInfo'
+    }
+
+    Executable('N4MapEditor_Debug')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$DebugLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/Debug/N4MapEditor.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4MapEditor_Objects_Debug' 'ND4C_Debug' .MapEditorQtLibrariesDebug .EditorSystemLibraries .EditorTracyLibraries .EditorAsanLibraries }
+    }
+    Executable('N4MapEditor_Release')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$ReleaseLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/Release/N4MapEditor.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4MapEditor_Objects_Release' 'ND4C_Release' .MapEditorQtLibrariesRelease .EditorSystemLibraries .EmptyAsanLibraries }
+    }
+    Executable('N4MapEditor_RelWithDebInfo')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$RelWithDebInfoLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/RelWithDebInfo/N4MapEditor.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4MapEditor_Objects_RelWithDebInfo' 'ND4C_RelWithDebInfo' .MapEditorQtLibrariesRelWithDebInfo .EditorSystemLibraries .EditorTracyLibraries .EditorAsanLibraries }
+    }
+}
+
+If( .N4DCBuildModelPreviewer )
+{
+    Exec('N4ModelPreviewer_Moc_ModelPreviewerWindow')
+    {
+        .ExecExecutable = '$QtHostBin$/moc.exe'
+        .ExecInput = '$Root$/src/ModelPreviewer/ModelPreviewerWindow.h'
+        .ExecOutput = '$GeneratedRoot$/qt/moc_ModelPreviewerWindow.cpp'
+        .ExecArguments = '$MocOptions$'
+    }
+
+    .ModelPreviewerDebugIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCDebugQtRuntimePrefix$/include" /I"$N4DCDebugQtRuntimePrefix$/include/QtCore" /I"$N4DCDebugQtRuntimePrefix$/include/QtGui" /I"$N4DCDebugQtRuntimePrefix$/include/QtWidgets" /I"$N4DCDebugQtRuntimePrefix$/include/QtSvg" /I"$N4DCDebugQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
+    .ModelPreviewerReleaseIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCReleaseQtRuntimePrefix$/include" /I"$N4DCReleaseQtRuntimePrefix$/include/QtCore" /I"$N4DCReleaseQtRuntimePrefix$/include/QtGui" /I"$N4DCReleaseQtRuntimePrefix$/include/QtWidgets" /I"$N4DCReleaseQtRuntimePrefix$/include/QtSvg" /I"$N4DCReleaseQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
+    .ModelPreviewerRelWithDebInfoIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtCore" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtGui" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtWidgets" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtSvg" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
+    .ModelPreviewerDebugCompilerOptions = '%1 /nologo /TP $DebugDefines$ /DN4DC_HAS_DIRECTXTEX=0 /W4 $ModelPreviewerDebugIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo%2'
+    .ModelPreviewerReleaseCompilerOptions = '%1 /nologo /TP $ReleaseDefines$ /DN4DC_HAS_DIRECTXTEX=0 -w $ModelPreviewerReleaseIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo%2'
+    .ModelPreviewerRelWithDebInfoCompilerOptions = '%1 /nologo /TP $RelWithDebInfoDefines$ /DN4DC_HAS_DIRECTXTEX=0 /W4 $ModelPreviewerRelWithDebInfoIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo%2'
+
+    Unity('N4ModelPreviewer_Unity_Debug')
+    {
+        .UnityInputFiles = .ModelPreviewerSources
+        .UnityOutputPath = '$BuildRoot$/Debug/unity/N4ModelPreviewer'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4ModelPreviewer_Moc_ModelPreviewerWindow' }
+    }
+    Unity('N4ModelPreviewer_Unity_Release')
+    {
+        .UnityInputFiles = .ModelPreviewerSources
+        .UnityOutputPath = '$BuildRoot$/Release/unity/N4ModelPreviewer'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4ModelPreviewer_Moc_ModelPreviewerWindow' }
+    }
+    Unity('N4ModelPreviewer_Unity_RelWithDebInfo')
+    {
+        .UnityInputFiles = .ModelPreviewerSources
+        .UnityOutputPath = '$BuildRoot$/RelWithDebInfo/unity/N4ModelPreviewer'
+        .UnityNumFiles = 4
+        .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4ModelPreviewer_Moc_ModelPreviewerWindow' }
+    }
+
+    ObjectList('N4ModelPreviewer_Objects_Debug')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$ModelPreviewerDebugCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/Debug/obj/N4ModelPreviewer'
+        .CompilerInputUnity = 'N4ModelPreviewer_Unity_Debug'
+    }
+    ObjectList('N4ModelPreviewer_Objects_Release')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$ModelPreviewerReleaseCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/Release/obj/N4ModelPreviewer'
+        .CompilerInputUnity = 'N4ModelPreviewer_Unity_Release'
+    }
+    ObjectList('N4ModelPreviewer_Objects_RelWithDebInfo')
+    {
+        .Compiler = 'ClangCl'
+        .CompilerOptions = '$ModelPreviewerRelWithDebInfoCompilerOptions$'
+        .CompilerOutputPath = '$BuildRoot$/RelWithDebInfo/obj/N4ModelPreviewer'
+        .CompilerInputUnity = 'N4ModelPreviewer_Unity_RelWithDebInfo'
+    }
+
+    .ModelPreviewerKtxLibraries = { }
+    If( .N4DCEnableKtx2 ) {
+        .ModelPreviewerKtxLibraries = { '$KtxLib$' }
+    }
+    .ModelPreviewerDebugLibraries = { 'ND4C_Debug' .EditorQtLibrariesDebug .ModelPreviewerKtxLibraries .EditorSystemLibraries '$FbxLibDebug$' '$FbxXmlDebug$' '$FbxZlibDebug$' 'bcrypt' }
+    .ModelPreviewerReleaseLibraries = { 'ND4C_Release' .EditorQtLibrariesRelease .ModelPreviewerKtxLibraries .EditorSystemLibraries '$FbxLibRelease$' '$FbxXmlRelease$' '$FbxZlibRelease$' 'bcrypt' }
+    .ModelPreviewerRelWithDebInfoLibraries = { 'ND4C_RelWithDebInfo' .EditorQtLibrariesRelWithDebInfo .ModelPreviewerKtxLibraries .EditorSystemLibraries '$FbxLibRelease$' '$FbxXmlRelease$' '$FbxZlibRelease$' 'bcrypt' }
+
+    Executable('N4ModelPreviewer_Debug')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$DebugLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/Debug/N4ModelPreviewer.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4ModelPreviewer_Objects_Debug' .ModelPreviewerDebugLibraries .EditorTracyLibraries .EditorAsanLibraries }
+    }
+    Executable('N4ModelPreviewer_Release')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$ReleaseLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/Release/N4ModelPreviewer.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4ModelPreviewer_Objects_Release' .ModelPreviewerReleaseLibraries .EmptyAsanLibraries }
+    }
+    Executable('N4ModelPreviewer_RelWithDebInfo')
+    {
+        .Linker = '$ClangLinker$'
+        .LinkerOptions = '$RelWithDebInfoLinkerOptions$'
+        .LinkerType = 'msvc'
+        .LinkerOutput = '$BuildRoot$/RelWithDebInfo/N4ModelPreviewer.exe'
+        .LinkerLinkObjects = true
+        .Libraries = { 'N4ModelPreviewer_Objects_RelWithDebInfo' .ModelPreviewerRelWithDebInfoLibraries .EditorTracyLibraries .EditorAsanLibraries }
+    }
+}
+
+If( .N4DCBuildModelPreviewer )
+{
+    Exec('N4ModelPreviewer_Package_Debug')
+    {
+        .ExecExecutable = 'powershell.exe'
+        .ExecInput = '$Root$/tools/package-model-previewer.ps1'
+        .ExecOutput = '$BuildRoot$/packages/N4ModelPreviewer-Debug.zip'
+        .ExecArguments = '-NoProfile -ExecutionPolicy Bypass -File "%1" -BuildDir "$BuildRoot$/Debug" -Configuration Debug -OutputDir "$BuildRoot$/packages" -QtRuntimeBin "$N4DCDebugQtRuntimePrefix$/bin" -NoBuild -Zip -Clean'
+        .ExecWorkingDir = '$Root$'
+        .PreBuildDependencies = 'N4ModelPreviewer_Debug'
+    }
+    Exec('N4ModelPreviewer_Package_Release')
+    {
+        .ExecExecutable = 'powershell.exe'
+        .ExecInput = '$Root$/tools/package-model-previewer.ps1'
+        .ExecOutput = '$BuildRoot$/packages/N4ModelPreviewer-Release.zip'
+        .ExecArguments = '-NoProfile -ExecutionPolicy Bypass -File "%1" -BuildDir "$BuildRoot$/Release" -Configuration Release -OutputDir "$BuildRoot$/packages" -QtRuntimeBin "$N4DCReleaseQtRuntimePrefix$/bin" -NoBuild -Zip -Clean'
+        .ExecWorkingDir = '$Root$'
+        .PreBuildDependencies = 'N4ModelPreviewer_Release'
+    }
+    Exec('N4ModelPreviewer_Package_RelWithDebInfo')
+    {
+        .ExecExecutable = 'powershell.exe'
+        .ExecInput = '$Root$/tools/package-model-previewer.ps1'
+        .ExecOutput = '$BuildRoot$/packages/N4ModelPreviewer-RelWithDebInfo.zip'
+        .ExecArguments = '-NoProfile -ExecutionPolicy Bypass -File "%1" -BuildDir "$BuildRoot$/RelWithDebInfo" -Configuration RelWithDebInfo -OutputDir "$BuildRoot$/packages" -QtRuntimeBin "$N4DCRelWithDebInfoQtRuntimePrefix$/bin" -NoBuild -Zip -Clean'
+        .ExecWorkingDir = '$Root$'
+        .PreBuildDependencies = 'N4ModelPreviewer_RelWithDebInfo'
+    }
+}
+
+If( .N4DCBuildMapEditor )
+{
+    Alias('N4MapEditor')
+    {
+        .Targets = 'N4MapEditor_Debug'
+    }
+}
+If( .N4DCBuildMapEditor )
+{
+    DefineQtDeployment('N4MapEditor_Debug' '$BuildRoot$/Debug' '$N4DCDebugQtRuntimePrefix$')
+    DefineQtDeployment('N4MapEditor_Release' '$BuildRoot$/Release' '$N4DCReleaseQtRuntimePrefix$')
+    DefineQtDeployment('N4MapEditor_RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' '$N4DCRelWithDebInfoQtRuntimePrefix$')
+}
+If( .N4DCBuildModelPreviewer )
+{
+    DefineModelPreviewerDeployment('N4ModelPreviewer_Debug' '$BuildRoot$/Debug' '$N4DCDebugQtRuntimePrefix$' 'release')
+    DefineModelPreviewerDeployment('N4ModelPreviewer_Release' '$BuildRoot$/Release' '$N4DCReleaseQtRuntimePrefix$' 'release')
+    DefineModelPreviewerDeployment('N4ModelPreviewer_RelWithDebInfo' '$BuildRoot$/RelWithDebInfo' '$N4DCRelWithDebInfoQtRuntimePrefix$' 'release')
+}
+
+If( .N4DCBuildModelPreviewer )
+{
+    Alias('N4ModelPreviewer')
+    {
+        .Targets = 'N4ModelPreviewer_Debug'
+    }
+}
+
+
+If( .N4DCBuildModelPreviewer )
+{
+    Alias('N4ModelPreviewer_Package')
+    {
+        .Targets = { 'N4ModelPreviewer_Package_Debug' 'N4ModelPreviewer_Package_Release' 'N4ModelPreviewer_Package_RelWithDebInfo' }
+    }
+}
