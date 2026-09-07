@@ -115,9 +115,9 @@ If( .N4DCBuildMapEditor )
         .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4MapEditor_Moc_MapEditorViewport' 'N4MapEditor_Moc_MapEditorWindow' 'N4MapEditor_Rcc' }
     }
 
-    .MapEditorDebugCompilerOptions = '\"%1\" /nologo /TP $DebugDefines$ /DN4DC_MAP_EDITOR=1 /W4 $DebugSourceIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
-    .MapEditorReleaseCompilerOptions = '\"%1\" /nologo /TP $ReleaseDefines$ /DN4DC_MAP_EDITOR=1 -w $ReleaseSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo\"%2\"'
-    .MapEditorRelWithDebInfoCompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /DN4DC_MAP_EDITOR=1 /W4 $RelWithDebInfoSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
+    .MapEditorDebugCompilerOptions = '\"%1\" /nologo /TP $DebugDefines$ /DN4DC_MAP_EDITOR=1 $N4DCCompilerWarningFlags$ $DebugSourceIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
+    .MapEditorReleaseCompilerOptions = '\"%1\" /nologo /TP $ReleaseDefines$ /DN4DC_MAP_EDITOR=1 $N4DCCompilerWarningFlags$ $ReleaseSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo\"%2\"'
+    .MapEditorRelWithDebInfoCompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /DN4DC_MAP_EDITOR=1 $N4DCCompilerWarningFlags$ $RelWithDebInfoSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
 
     ObjectList('N4MapEditor_Objects_Debug')
     {
@@ -183,9 +183,9 @@ If( .N4DCBuildModelPreviewer )
     .ModelPreviewerDebugIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCDebugQtRuntimePrefix$/include" /I"$N4DCDebugQtRuntimePrefix$/include/QtCore" /I"$N4DCDebugQtRuntimePrefix$/include/QtGui" /I"$N4DCDebugQtRuntimePrefix$/include/QtWidgets" /I"$N4DCDebugQtRuntimePrefix$/include/QtSvg" /I"$N4DCDebugQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
     .ModelPreviewerReleaseIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCReleaseQtRuntimePrefix$/include" /I"$N4DCReleaseQtRuntimePrefix$/include/QtCore" /I"$N4DCReleaseQtRuntimePrefix$/include/QtGui" /I"$N4DCReleaseQtRuntimePrefix$/include/QtWidgets" /I"$N4DCReleaseQtRuntimePrefix$/include/QtSvg" /I"$N4DCReleaseQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
     .ModelPreviewerRelWithDebInfoIncludeFlags = '$CommonSourceIncludeFlags$ /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtCore" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtGui" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtWidgets" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtSvg" /I"$N4DCRelWithDebInfoQtRuntimePrefix$/include/QtConcurrent" /I"$Root$/libs/autodesk-fbx-2020.3.10/include"'
-    .ModelPreviewerDebugCompilerOptions = '\"%1\" /nologo /TP $DebugDefines$ /DN4DC_HAS_DIRECTXTEX=0 /W4 $ModelPreviewerDebugIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
-    .ModelPreviewerReleaseCompilerOptions = '\"%1\" /nologo /TP $ReleaseDefines$ /DN4DC_HAS_DIRECTXTEX=0 -w $ModelPreviewerReleaseIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo\"%2\"'
-    .ModelPreviewerRelWithDebInfoCompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /DN4DC_HAS_DIRECTXTEX=0 /W4 $ModelPreviewerRelWithDebInfoIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
+    .ModelPreviewerDebugCompilerOptions = '\"%1\" /nologo /TP $DebugDefines$ /DN4DC_HAS_DIRECTXTEX=0 $N4DCCompilerWarningFlags$ $ModelPreviewerDebugIncludeFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo\"%2\"'
+    .ModelPreviewerReleaseCompilerOptions = '\"%1\" /nologo /TP $ReleaseDefines$ /DN4DC_HAS_DIRECTXTEX=0 $N4DCCompilerWarningFlags$ $ModelPreviewerReleaseIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo\"%2\"'
+    .ModelPreviewerRelWithDebInfoCompilerOptions = '\"%1\" /nologo /TP $RelWithDebInfoDefines$ /DN4DC_HAS_DIRECTXTEX=0 $N4DCCompilerWarningFlags$ $ModelPreviewerRelWithDebInfoIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo\"%2\"'
 
     Unity('N4ModelPreviewer_Unity_Debug')
     {

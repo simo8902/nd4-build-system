@@ -1,67 +1,98 @@
+// =============================================================================
+// USER CONFIGURATION - edit values only inside this block
+// =============================================================================
+
+// Project paths
 .Root = 'C:/Users/Simeon/Documents/nebula device 4'
-.BuildSystemRoot = 'C:/Users/Simeon/Documents/nd4-build-system'
+.BuildSystemRoot = '$Root$/nd4-build-system'
 .BuildRoot = '$Root$/build-fastbuild'
-Print("N4DC BFF root=$Root$ build=$BuildRoot$ shader=$Root$/shaders")
 .GeneratedRoot = '$BuildRoot$/generated'
-#include "fbuild.options.bff"
 
-.N4DCEnableShaderCompilation = false
-.N4DCEnableVulkanValidation = false
+// Build features
+// Warning levels: 'W0', 'W1', 'W2', 'W3', 'W4', or 'Wall'; false forces W0.
+.N4DCShowCompilerWarnings = false
+.N4DCWarningLevel = 'W0'
+.N4DCEnableASAN = false
+.N4DCEnableTracy = true
+.N4DCEnableKtx2 = true
+.N4DCEnableAnimations = false
+.N4DCEnableParticles = false
+.N4DCStandaloneMode = true
+.N4DCVulkanCheck = false
+.N4DCDisableLogWindow = false
+.N4DCDisableLogging = false
+.N4DCBuildMapEditor = false
+.N4DCBuildModelPreviewer = false
+.N4DCEnableHdr10Output = true
+.N4DCUseStartupMap = true
+.N4DCEnableShaderCompilation = true
+.N4DCEnableVulkanValidation = true
 
-.N4DCEnableAnimationsValue = '1'
-.N4DCEnableParticlesValue = '0'
-.N4DCStandaloneModeValue = '0'
-.N4DCVulkanCheckValue = '0'
-.N4DCDisableLogWindowValue = '1'
-.N4DCHasKtx2Value = '0'
-.N4DCEnableHdr10OutputValue = '1'
-.N4DCUseStartupMapValue = '1'
-.N4DCDisableLoggingDefine = ''
-.N4DCDebugTracyDefines = ''
-.N4DCRelWithDebInfoTracyDefines = ''
-.N4DCDebugAsanDefines = ''
-.N4DCRelWithDebInfoAsanDefines = ''
-.N4DCDebugAsanCompile = ''
-.N4DCRelWithDebInfoAsanCompile = ''
-If( !.N4DCEnableAnimations ) { .N4DCEnableAnimationsValue = '0' }
-If( .N4DCEnableParticles ) { .N4DCEnableParticlesValue = '1' }
-If( .N4DCStandaloneMode ) { .N4DCStandaloneModeValue = '1' }
-If( .N4DCVulkanCheck ) { .N4DCVulkanCheckValue = '1' }
-If( !.N4DCDisableLogWindow ) { .N4DCDisableLogWindowValue = '0' }
-If( !.N4DCEnableHdr10Output ) { .N4DCEnableHdr10OutputValue = '0' }
-If( !.N4DCUseStartupMap ) { .N4DCUseStartupMapValue = '0' }
-If( .N4DCEnableKtx2 ) { .N4DCHasKtx2Value = '1' }
-If( .N4DCDisableLogging ) { .N4DCDisableLoggingDefine = '/DN4DC_DISABLE_LOGGING' }
-If( .N4DCEnableTracy ) {
-    .N4DCDebugTracyDefines = '/DTRACY_ENABLE'
-    .N4DCRelWithDebInfoTracyDefines = '/DTRACY_ENABLE'
-}
-If( .N4DCEnableASAN ) {
-    .N4DCDebugAsanDefines = '/D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION'
-    .N4DCRelWithDebInfoAsanDefines = '/D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION'
-    .N4DCDebugAsanCompile = '/fsanitize=address'
-    .N4DCRelWithDebInfoAsanCompile = '/fsanitize=address'
-}
+// Application identity and window
+.N4DCApplicationName = 'Nebula Device 4'
+.N4DCApplicationVersion = '2026.7.12'
+.N4DCOrganizationName = 'DSO Reconstruction Team'
+.N4DCMainThreadName = 'Main Thread'
+.N4DCSplashImageFileName = 'enginesplashscreen.png'
+.N4DCEditorStylesheetFileName = 'EditorStyle.qss'
+.N4DCSplashDisplayDurationMs = '2500'
+.N4DCStandaloneWindowWidth = '800'
+.N4DCStandaloneWindowHeight = '600'
 
-.QtAsanPrefix = 'D:/QT/6.11.1/2026_64-asan-relwithdebinfo-clang22'
-.QtStandardPrefix = ''
-.QtHostPrefix = 'D:/QT/6.11.1/build-host-6.11.1'
-.N4DCDebugQtRuntimePrefix = '$QtAsanPrefix$'
-.N4DCReleaseQtRuntimePrefix = '$QtStandardPrefix$'
-.N4DCRelWithDebInfoQtRuntimePrefix = '$QtAsanPrefix$'
-.QtHostBin = 'D:/QT/6.11.1/build-host-6.11.1/qtbase/bin'
+// Startup content
+.N4DCStartupMapEnvironmentName = 'N4DC_STARTUP_MAP'
+.N4DCStartupMapPath = 'C:/drasa_online/work/maps/a0006_grimford_hub.map'
+.N4DCEmptyEnvironmentValue = ''
+.N4DCFallbackStartupModelPath1 = 'C:/drasa_online/work/models/t001_hub/deco_stone_01.n3'
+.N4DCFallbackStartupModelPath2 = 'C:/drasa_online/work/models/t001_hub/deco_box_01.n3'
+
+// Display look and HDR
+.N4DCLookExposure = '1.12'
+.N4DCLookContrast = '1.10'
+.N4DCLookGamma = '1.0'
+.N4DCLookSaturation = '2.10'
+.N4DCLookBloom = '1.05'
+.N4DCLookFog = '1.00'
+.N4DCLookHighlightBoost = '0.18'
+.N4DCHdr10PaperWhiteNits = '200.0'
+.N4DCHdr10PeakNits = '1000.0'
+.N4DCHdr10MinNits = '0.0001'
+.N4DCHdr10MaxFallNits = '400.0'
+
+// Runtime configuration values
+.N4DCDisableFrustumCullingValue = '1'
+.N4DCDisableFaceCullingValue = '1'
+.N4DCGpuCullingValue = '0'
+.N4DCVulkanLayerFilterValue = 'VK_LAYER_OBS_HOOK'
+.N4DCVulkanLayerPathEnvironmentName = 'VK_LAYER_PATH'
+.N4DCDirectStandardDrawsWindowsValue = '1'
+.N4DCDirectStandardDrawsNonWindowsValue = '0'
+.N4DCGameThreadValue = '1'
+.N4DCRenderThreadValue = '1'
+.N4DCDisableDxgiPresenterValue = '0'
+
+
+// Qt and compiler toolchain paths
+.QtAsanPrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.QtStandardPrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.QtHostPrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.N4DCDebugQtRuntimePrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.N4DCReleaseQtRuntimePrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.N4DCRelWithDebInfoQtRuntimePrefix = 'C:/Qt/6.11.0/msvc2022_64'
+.QtHostBin = 'C:/Qt/6.11.0/msvc2022_64/bin'
 .MocOptions = '"%1" -o "%2"'
 .ClangBin = 'C:/Program Files/LLVM/bin'
 .ClangCompiler = '$ClangBin$/clang-cl.exe'
 .ClangLinker = '$ClangBin$/lld-link.exe'
 .ClangLibrarian = '$ClangBin$/llvm-lib.exe'
 .Python = 'C:/Users/Simeon/miniconda3/python.exe'
-.VulkanSdk = ''
-.MsvcInclude = ''
-.WindowsSdkInclude = ''
+.VulkanSdk = 'C:/VulkanSDK/1.4.341.1'
+.MsvcInclude = 'C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/include'
+.WindowsSdkInclude = 'C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0'
 .WindowsSdkLib = 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64'
 .WindowsSdkUcrtLib = 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/ucrt/x64'
 .MsvcLib = 'C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/lib/x64'
+// Engine SDK and bundled library paths
 .VulkanRoot = '$Root$/libs/VULKAN/1.4.341.1'
 .VulkanInclude = '$VulkanRoot$/Include'
 .VulkanLib = '$VulkanRoot$/Lib/vulkan-1.lib'
@@ -82,22 +113,63 @@ If( .N4DCEnableASAN ) {
 .FbxZlibRelease = '$FbxRoot$/lib/x64/release/zlib-md.lib'
 .TracyInclude = '$Root$/libs/tracy/release/include/tracy'
 .TracyLib = '$Root$/libs/tracy/release/lib/TracyClient.lib'
-.AsanResource = ''
+.AsanResource = 'C:/Program Files/LLVM/lib/clang/22/lib/windows'
 .AsanLinkerLib = 'C:/Program Files/LLVM/lib/clang/22/lib/windows'
 .AsanRuntime = '$AsanLinkerLib$/clang_rt.asan_dynamic-x86_64.lib'
 .AsanThunk = '$AsanLinkerLib$/clang_rt.asan_dynamic_runtime_thunk-x86_64.lib'
 .AsanDll = '$AsanLinkerLib$/clang_rt.asan_dynamic-x86_64.dll'
-.Glslang = 'glslangValidator.exe'
+.Glslang = 'C:/VulkanSDK/1.4.341.1/Bin/glslangValidator.exe'
 
-#if file_exists("fbuild.local.bff")
-#include "fbuild.local.bff"
-#endif
+// =============================================================================
+// END USER CONFIGURATION
+// =============================================================================
+
+Print("N4DC BFF root=$Root$ build=$BuildRoot$ shader=$Root$/shaders")
+
+.N4DCEnableAnimationsValue = '1'
+.N4DCEnableParticlesValue = '0'
+.N4DCStandaloneModeValue = '0'
+.N4DCVulkanCheckValue = '0'
+.N4DCDisableLogWindowValue = '1'
+.N4DCHasKtx2Value = '0'
+.N4DCEnableHdr10OutputValue = '1'
+.N4DCUseStartupMapValue = '0'
+.N4DCVulkanValidationValue = '0'
+.N4DCDisableLoggingDefine = ''
+.N4DCDebugTracyDefines = ''
+.N4DCRelWithDebInfoTracyDefines = ''
+.N4DCDebugAsanDefines = ''
+.N4DCRelWithDebInfoAsanDefines = ''
+.N4DCDebugAsanCompile = ''
+.N4DCRelWithDebInfoAsanCompile = ''
+.N4DCCompilerWarningFlags = '/W0'
+If( !.N4DCEnableAnimations ) { ^N4DCEnableAnimationsValue = '0' }
+If( .N4DCEnableParticles ) { ^N4DCEnableParticlesValue = '1' }
+If( .N4DCStandaloneMode ) { ^N4DCStandaloneModeValue = '1' }
+If( .N4DCVulkanCheck ) { ^N4DCVulkanCheckValue = '1' }
+If( !.N4DCDisableLogWindow ) { ^N4DCDisableLogWindowValue = '0' }
+If( !.N4DCEnableHdr10Output ) { ^N4DCEnableHdr10OutputValue = '0' }
+If( .N4DCUseStartupMap ) { ^N4DCUseStartupMapValue = '1' }
+If( .N4DCEnableKtx2 ) { ^N4DCHasKtx2Value = '1' }
+If( .N4DCEnableVulkanValidation ) { ^N4DCVulkanValidationValue = '1' }
+If( .N4DCDisableLogging ) { ^N4DCDisableLoggingDefine = '/DN4DC_DISABLE_LOGGING' }
+If( .N4DCShowCompilerWarnings ) { ^N4DCCompilerWarningFlags = '/$N4DCWarningLevel$' }
+If( .N4DCEnableTracy ) {
+    ^N4DCDebugTracyDefines = '/DTRACY_ENABLE'
+    ^N4DCRelWithDebInfoTracyDefines = '/DTRACY_ENABLE'
+}
+If( .N4DCEnableASAN ) {
+    ^N4DCDebugAsanDefines = '/D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION'
+    ^N4DCRelWithDebInfoAsanDefines = '/D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION'
+    ^N4DCDebugAsanCompile = '/fsanitize=address'
+    ^N4DCRelWithDebInfoAsanCompile = '/fsanitize=address'
+}
 
 .SystemSourceIncludeFlags = '/I"$MsvcInclude$" /I"$WindowsSdkInclude$/ucrt" /I"$WindowsSdkInclude$/shared" /I"$WindowsSdkInclude$/um" /I"$WindowsSdkInclude$/winrt"'
-.CommonSourceIncludeFlags = '$SystemSourceIncludeFlags$ /I. /I./src /I./build-fastbuild/generated /external:I./libs/glm /external:I./libs/VULKAN/1.4.341.1/Include /external:I./libs/VVMemoryAllocator/include /external:I./libs/VKBootstrap/release/include /external:I./libs/glfw3.4/include /external:I./libs/tracy/release/include/tracy'
+.CommonSourceIncludeFlags = '$SystemSourceIncludeFlags$ /I"$Root$" /I"$Root$/src" /I"$Root$/build-fastbuild/generated" /external:I"$Root$/libs/glm" /external:I"$Root$/libs/VULKAN/1.4.341.1/Include" /external:I"$Root$/libs/VVMemoryAllocator/include" /external:I"$Root$/libs/VKBootstrap/release/include" /external:I"$Root$/libs/glfw3.4/include" /external:I"$Root$/libs/tracy/release/include/tracy"'
 .CommonExternalWarningFlags = '/external:W0'
 If( .N4DCEnableKtx2 ) {
-    .CommonSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I./libs/KTX-Software/debug/include'
+    ^CommonSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$Root$/libs/KTX-Software/debug/include"'
 }
 .DebugSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$N4DCDebugQtRuntimePrefix$/include" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtCore" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtGui" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtWidgets" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtSvg" /external:I"$N4DCDebugQtRuntimePrefix$/include/QtConcurrent"'
 .ReleaseSourceIncludeFlags = '$CommonSourceIncludeFlags$ /external:I"$N4DCReleaseQtRuntimePrefix$/include" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtCore" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtGui" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtWidgets" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtSvg" /external:I"$N4DCReleaseQtRuntimePrefix$/include/QtConcurrent"'
@@ -107,12 +179,12 @@ If( .N4DCEnableKtx2 ) {
 .DebugDefines = '$CommonDefines$ /DN4DC_DEBUG_BUILD $N4DCDebugAsanDefines$ $N4DCDebugTracyDefines$'
 .ReleaseDefines = '$CommonDefines$'
 .RelWithDebInfoDefines = '$CommonDefines$ $N4DCRelWithDebInfoAsanDefines$ $N4DCRelWithDebInfoTracyDefines$'
-.DebugCompilerOptions = '"%1" /nologo /TP $DebugDefines$ /W4 $DebugSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ -c /Fo"%2"'
-.ReleaseCompilerOptions = '"%1" /nologo /TP $ReleaseDefines$ -w $ReleaseSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD -c /Fo"%2"'
-.RelWithDebInfoCompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ /W4 $RelWithDebInfoSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
-.DebugCCompilerOptions = '"%1" /nologo /TC $DebugDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /Zi /Ob0 /Od /RTC1 /std:c11 /MD $N4DCDebugAsanCompile$ -c /Fo"%2"'
-.ReleaseCCompilerOptions = '"%1" /nologo /TC $ReleaseDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /std:c11 /MD -c /Fo"%2"'
-.RelWithDebInfoCCompilerOptions = '"%1" /nologo /TC $RelWithDebInfoDefines$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /Zi /std:c11 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
+.DebugCompilerOptions = '"%1" /nologo /TP $DebugDefines$ $N4DCCompilerWarningFlags$ $DebugSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /Zi /Ob0 /Od /RTC1 /std:c++20 /MD $N4DCDebugAsanCompile$ /c /Fo"%2"'
+.ReleaseCompilerOptions = '"%1" /nologo /TP $ReleaseDefines$ $N4DCCompilerWarningFlags$ $ReleaseSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /std:c++20 /MD /c /Fo"%2"'
+.RelWithDebInfoCompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ $N4DCCompilerWarningFlags$ $RelWithDebInfoSourceIncludeFlags$ $CommonExternalWarningFlags$ /GR /EHsc /O2 /Ob3 /Oi /GL /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ /c /Fo"%2"'
+.DebugCCompilerOptions = '"%1" /nologo /TC $DebugDefines$ $N4DCCompilerWarningFlags$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /Zi /Ob0 /Od /RTC1 /std:c11 /MD $N4DCDebugAsanCompile$ /c /Fo"%2"'
+.ReleaseCCompilerOptions = '"%1" /nologo /TC $ReleaseDefines$ $N4DCCompilerWarningFlags$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /std:c11 /MD /c /Fo"%2"'
+.RelWithDebInfoCCompilerOptions = '"%1" /nologo /TC $RelWithDebInfoDefines$ $N4DCCompilerWarningFlags$ $CommonSourceIncludeFlags$ $CommonExternalWarningFlags$ /O2 /Ob3 /Oi /GL /Zi /std:c11 /MD $N4DCRelWithDebInfoAsanCompile$ /c /Fo"%2"'
 .DebugLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /INCREMENTAL /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
 .ReleaseLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
 .RelWithDebInfoLinkerOptions = '"%1" /nologo /OUT:"%2" /MACHINE:X64 /DEBUG /OPT:REF /OPT:ICF /LTCG /SUBSYSTEM:CONSOLE /LIBPATH:"$WindowsSdkLib$" /LIBPATH:"$WindowsSdkUcrtLib$" /LIBPATH:"$MsvcLib$" /LIBPATH:"$AsanLinkerLib$"'
@@ -146,7 +218,7 @@ Settings
     '$Root$/src/Editor/QtDockingHost.cpp'
     '$Root$/src/Editor/ViewportWindow.cpp'
 }
-.CompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ /W4 $CommonSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ -c /Fo"%2"'
+.CompilerOptions = '"%1" /nologo /TP $RelWithDebInfoDefines$ $N4DCCompilerWarningFlags$ $CommonSourceIncludeFlags$ /GR /EHsc /O2 /Ob3 /Oi /Zi /std:c++20 /MD $N4DCRelWithDebInfoAsanCompile$ /c /Fo"%2"'
 ObjectList('N4DC_Idlc_Objects')
 {
     .Compiler = 'ClangCl'
@@ -177,7 +249,7 @@ Exec('N4DC_Idlc_GpuTypes')
 Exec('N4DC_ApplicationConfiguration')
 {
     .ExecExecutable = '$Python$'
-    .ExecInput = { '$Root$/tools/ApplicationConfiguration.h.in' '$Root$/tools/generate-application-config.py' '$Root$/fbuild.options.bff' }
+    .ExecInput = { '$Root$/tools/ApplicationConfiguration.h.in' '$Root$/tools/generate-application-config.py' '$BuildSystemRoot$/fbuild.bff' }
     .ExecOutput = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
     .ExecArguments = '"tools/generate-application-config.py" --template "tools/ApplicationConfiguration.h.in" --output "%2" --setting "N4DC_APPLICATION_NAME=$N4DCApplicationName$" --setting "N4DC_APPLICATION_VERSION=$N4DCApplicationVersion$" --setting "N4DC_ORGANIZATION_NAME=$N4DCOrganizationName$" --setting "N4DC_MAIN_THREAD_NAME=$N4DCMainThreadName$" --setting "N4DC_SPLASH_IMAGE_FILE_NAME=$N4DCSplashImageFileName$" --setting "N4DC_EDITOR_STYLESHEET_FILE_NAME=$N4DCEditorStylesheetFileName$" --setting "N4DC_SPLASH_DISPLAY_DURATION_MS=$N4DCSplashDisplayDurationMs$" --setting "N4DC_STANDALONE_WINDOW_WIDTH=$N4DCStandaloneWindowWidth$" --setting "N4DC_STANDALONE_WINDOW_HEIGHT=$N4DCStandaloneWindowHeight$" --setting "N4DC_USE_STARTUP_MAP_VALUE=$N4DCUseStartupMapValue$" --setting "N4DC_STARTUP_MAP_ENVIRONMENT_NAME=$N4DCStartupMapEnvironmentName$" --setting "N4DC_STARTUP_MAP_PATH=$N4DCStartupMapPath$" --setting "N4DC_EMPTY_ENVIRONMENT_VALUE=$N4DCEmptyEnvironmentValue$" --setting "N4DC_FALLBACK_STARTUP_MODEL_PATH_1=$N4DCFallbackStartupModelPath1$" --setting "N4DC_FALLBACK_STARTUP_MODEL_PATH_2=$N4DCFallbackStartupModelPath2$" --setting "N4DC_LOOK_EXPOSURE=$N4DCLookExposure$" --setting "N4DC_LOOK_CONTRAST=$N4DCLookContrast$" --setting "N4DC_LOOK_GAMMA=$N4DCLookGamma$" --setting "N4DC_LOOK_SATURATION=$N4DCLookSaturation$" --setting "N4DC_LOOK_BLOOM=$N4DCLookBloom$" --setting "N4DC_LOOK_FOG=$N4DCLookFog$" --setting "N4DC_LOOK_HIGHLIGHT_BOOST=$N4DCLookHighlightBoost$" --setting "N4DC_ENABLE_HDR10_OUTPUT_VALUE=$N4DCEnableHdr10OutputValue$" --setting "N4DC_HDR10_PAPER_WHITE_NITS=$N4DCHdr10PaperWhiteNits$" --setting "N4DC_HDR10_PEAK_NITS=$N4DCHdr10PeakNits$" --setting "N4DC_HDR10_MIN_NITS=$N4DCHdr10MinNits$" --setting "N4DC_HDR10_MAX_FALL_NITS=$N4DCHdr10MaxFallNits$" --setting "N4DC_DISABLE_FRUSTUM_CULLING_VALUE=$N4DCDisableFrustumCullingValue$" --setting "N4DC_DISABLE_FACE_CULLING_VALUE=$N4DCDisableFaceCullingValue$" --setting "N4DC_GPU_CULLING_VALUE=$N4DCGpuCullingValue$" --setting "N4DC_VULKAN_LAYER_FILTER_VALUE=$N4DCVulkanLayerFilterValue$" --setting "N4DC_VULKAN_LAYER_PATH_ENVIRONMENT_NAME=$N4DCVulkanLayerPathEnvironmentName$" --setting "N4DC_VULKAN_VALIDATION_VALUE=$N4DCVulkanValidationValue$" --setting "N4DC_DIRECT_STANDARD_DRAWS_WINDOWS_VALUE=$N4DCDirectStandardDrawsWindowsValue$" --setting "N4DC_DIRECT_STANDARD_DRAWS_NON_WINDOWS_VALUE=$N4DCDirectStandardDrawsNonWindowsValue$" --setting "N4DC_GAME_THREAD_VALUE=$N4DCGameThreadValue$" --setting "N4DC_RENDER_THREAD_VALUE=$N4DCRenderThreadValue$" --setting "N4DC_DISABLE_LOG_WINDOW_VALUE=$N4DCDisableLogWindowValue$" --setting "N4DC_DISABLE_DXGI_PRESENTER_VALUE=$N4DCDisableDxgiPresenterValue$"'
     .ExecWorkingDir = '$Root$'
@@ -197,7 +269,7 @@ Exec('N4DC_EmbeddedIcons')
 
 .N4DCShaderDependencies = { }
 If( .N4DCEnableShaderCompilation ) {
-    .N4DCShaderDependencies = { 'N4DC_Shaders' }
+    ^N4DCShaderDependencies = { 'N4DC_Shaders' }
 }
 
 If( .N4DCEnableShaderCompilation ) {
@@ -276,6 +348,8 @@ Unity('N4DC_Unity_Debug')
     .UnityInputExcludePath = .EngineSourceExcludePaths
     .UnityOutputPath = '$BuildRoot$/Debug/unity/ND4C'
     .UnityNumFiles = 8
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' }
 }
 Unity('N4DC_Unity_Release')
 {
@@ -285,6 +359,8 @@ Unity('N4DC_Unity_Release')
     .UnityInputExcludePath = .EngineSourceExcludePaths
     .UnityOutputPath = '$BuildRoot$/Release/unity/ND4C'
     .UnityNumFiles = 8
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' }
 }
 Unity('N4DC_Unity_RelWithDebInfo')
 {
@@ -294,12 +370,15 @@ Unity('N4DC_Unity_RelWithDebInfo')
     .UnityInputExcludePath = .EngineSourceExcludePaths
     .UnityOutputPath = '$BuildRoot$/RelWithDebInfo/unity/ND4C'
     .UnityNumFiles = 8
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
+    .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' }
 }
 Unity('N4Editor_Unity_Debug')
 {
     .UnityInputFiles = .EditorSources + .EditorMocSources
     .UnityOutputPath = '$BuildRoot$/Debug/unity/N4Editor'
     .UnityNumFiles = 4
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
     .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4Editor_Moc_AnimationWindow' 'N4Editor_Moc_DockWorkspace' 'N4Editor_Moc_LogWindow' 'N4Editor_Moc_MainWindow' 'N4Editor_Moc_QtDockingHost' 'N4Editor_Moc_ViewportWindow' }
 }
 Unity('N4Editor_Unity_Release')
@@ -307,6 +386,7 @@ Unity('N4Editor_Unity_Release')
     .UnityInputFiles = .EditorSources + .EditorMocSources
     .UnityOutputPath = '$BuildRoot$/Release/unity/N4Editor'
     .UnityNumFiles = 4
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
     .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4Editor_Moc_AnimationWindow' 'N4Editor_Moc_DockWorkspace' 'N4Editor_Moc_LogWindow' 'N4Editor_Moc_MainWindow' 'N4Editor_Moc_QtDockingHost' 'N4Editor_Moc_ViewportWindow' }
 }
 Unity('N4Editor_Unity_RelWithDebInfo')
@@ -314,6 +394,7 @@ Unity('N4Editor_Unity_RelWithDebInfo')
     .UnityInputFiles = .EditorSources + .EditorMocSources
     .UnityOutputPath = '$BuildRoot$/RelWithDebInfo/unity/N4Editor'
     .UnityNumFiles = 4
+    .UnityPCH = '$GeneratedRoot$/ApplicationConfiguration.generated.h'
     .PreBuildDependencies = { 'N4DC_ApplicationConfiguration' 'N4DC_EmbeddedIcons' 'N4Editor_Moc_AnimationWindow' 'N4Editor_Moc_DockWorkspace' 'N4Editor_Moc_LogWindow' 'N4Editor_Moc_MainWindow' 'N4Editor_Moc_QtDockingHost' 'N4Editor_Moc_ViewportWindow' }
 }
 
@@ -437,17 +518,17 @@ Library('ND4C_RelWithDebInfo')
 .EmptyLibraries = { }
 .EditorSystemLibraries = { '$GlfwLib$' '$WindowsSdkLib$/gdi32.lib' '$WindowsSdkLib$/opengl32.lib' '$WindowsSdkLib$/shell32.lib' '$WindowsSdkLib$/user32.lib' '$VulkanLib$' '$VulkanBootstrapLib$' '$WindowsSdkLib$/winhttp.lib' '$WindowsSdkLib$/d3d11.lib' '$WindowsSdkLib$/dxgi.lib' '$WindowsSdkLib$/WinMM.Lib' '$WindowsSdkLib$/DbgHelp.Lib' }
 If( .N4DCEnableKtx2 ) {
-    .EditorSystemLibraries = .EditorSystemLibraries + { '$KtxLib$' }
+    ^EditorSystemLibraries = .EditorSystemLibraries + { '$KtxLib$' }
 }
 .EditorTracyLibraries = { }
 If( .N4DCEnableTracy ) {
-    .EditorTracyLibraries = { '$TracyLib$' }
+    ^EditorTracyLibraries = { '$TracyLib$' }
 }
 .EditorAsanLibraries = { }
 .EmptyAsanLibraries = { }
 .EmptyAsanTargets = { }
 If( .N4DCEnableASAN ) {
-    .EditorAsanLibraries = { '$AsanRuntime$' '$AsanThunk$' }
+    ^EditorAsanLibraries = { '$AsanRuntime$' '$AsanThunk$' }
 }
 
 function DefineQtRuntimeDlls( .DeploymentTargetName .OutputRoot .QtPrefix .PreBuildTarget )
@@ -571,9 +652,9 @@ If( .N4DCEnableASAN ) {
 .ReleaseValidationTargets = { }
 .RelWithDebInfoValidationTargets = { }
 If( .N4DCEnableVulkanValidation ) {
-    .DebugValidationTargets = { 'N4Editor_ValidationDll_Debug' 'N4Editor_ValidationJson_Debug' }
-    .ReleaseValidationTargets = { 'N4Editor_ValidationDll_Release' 'N4Editor_ValidationJson_Release' }
-    .RelWithDebInfoValidationTargets = { 'N4Editor_ValidationDll_RelWithDebInfo' 'N4Editor_ValidationJson_RelWithDebInfo' }
+    ^DebugValidationTargets = { 'N4Editor_ValidationDll_Debug' 'N4Editor_ValidationJson_Debug' }
+    ^ReleaseValidationTargets = { 'N4Editor_ValidationDll_Release' 'N4Editor_ValidationJson_Release' }
+    ^RelWithDebInfoValidationTargets = { 'N4Editor_ValidationDll_RelWithDebInfo' 'N4Editor_ValidationJson_RelWithDebInfo' }
 }
 DefineEditor('Debug' '$BuildRoot$/Debug' .EditorQtLibrariesDebug .EditorTracyLibraries .DebugAsanLibraries .DebugAsanTargets .DebugValidationTargets .N4DCShaderDependencies 'N4Editor_Unity_Debug' '$DebugCompilerOptions$' '$DebugLinkerOptions$' .N4DCDebugQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)
 DefineEditor('Release' '$BuildRoot$/Release' .EditorQtLibrariesRelease .EmptyLibraries .EmptyAsanLibraries .EmptyAsanTargets .ReleaseValidationTargets .N4DCShaderDependencies 'N4Editor_Unity_Release' '$ReleaseCompilerOptions$' '$ReleaseLinkerOptions$' .N4DCReleaseQtRuntimePrefix .ClangLinker .Root .VulkanSdk .AsanDll .EditorSystemLibraries)

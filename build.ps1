@@ -153,49 +153,17 @@ $asanThunk = Join-Path $asanResource 'clang_rt.asan_dynamic_runtime_thunk-x86_64
 $asanDll = Join-Path $asanResource 'clang_rt.asan_dynamic-x86_64.dll'
 $validationValue = if ($EnableVulkanValidation) { '1' } else { '0' }
 
-$localBffPath = Join-Path $buildSystemRoot 'fbuild.local.bff'
-$localBffLines = @(
-    ".QtAsanPrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".QtStandardPrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".QtHostPrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".N4DCDebugQtRuntimePrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".N4DCReleaseQtRuntimePrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".N4DCRelWithDebInfoQtRuntimePrefix = '$(ConvertTo-BffPath $qtRoot)'",
-    ".QtHostBin = '$(ConvertTo-BffPath $qtBin)'",
-    ".ClangBin = '$(ConvertTo-BffPath $clangBin)'",
-    ".ClangCompiler = '$(ConvertTo-BffPath $clangCompiler)'",
-    ".ClangLinker = '$(ConvertTo-BffPath $clangLinker)'",
-    ".ClangLibrarian = '$(ConvertTo-BffPath $clangLibrarian)'",
-    ".Python = '$(ConvertTo-BffPath $pythonExecutable)'",
-    ".VulkanSdk = '$(ConvertTo-BffPath $vulkanRoot)'",
-    ".MsvcInclude = '$(ConvertTo-BffPath $MsvcInclude)'",
-    ".MsvcLib = '$(ConvertTo-BffPath $MsvcLib)'",
-    ".WindowsSdkInclude = '$(ConvertTo-BffPath $WindowsSdkInclude)'",
-    ".WindowsSdkLib = '$(ConvertTo-BffPath $WindowsSdkLib)'",
-    ".WindowsSdkUcrtLib = '$(ConvertTo-BffPath $WindowsSdkUcrtLib)'",
-    ".AsanResource = '$(ConvertTo-BffPath $asanResource)'",
-    ".AsanLinkerLib = '$(ConvertTo-BffPath $asanResource)'",
-    ".AsanRuntime = '$(ConvertTo-BffPath $asanRuntime)'",
-    ".AsanThunk = '$(ConvertTo-BffPath $asanThunk)'",
-    ".AsanDll = '$(ConvertTo-BffPath $asanDll)'",
-    ".Glslang = '$(ConvertTo-BffPath $glslangExecutable)'",
-    ".N4DCEnableShaderCompilation = $($EnableShaderCompilation.ToString().ToLowerInvariant())",
-    ".N4DCEnableVulkanValidation = $($EnableVulkanValidation.ToString().ToLowerInvariant())",
-    ".N4DCVulkanValidationValue = '$validationValue'"
-)
-
-[System.IO.File]::WriteAllText(
-    $localBffPath,
-    (($localBffLines -join [Environment]::NewLine) + [Environment]::NewLine),
-    [System.Text.UTF8Encoding]::new($false)
-)
-
 $bffPath = Join-Path $buildSystemRoot 'fbuild.bff'
+$buildWrapperPath = Join-Path $buildSystemRoot 'build-and-compdb.cmd'
+if (-not (Test-Path -LiteralPath $buildWrapperPath -PathType Leaf)) {
+    throw "Build wrapper was not found: $buildWrapperPath"
+}
+
 $exitCode = 1
 
 Push-Location $engineRoot
 try {
-    & $fbuildExecutable '-config' $bffPath '-continueafterdbmove' $Target
+    & $buildWrapperPath $Target
     $exitCode = $LASTEXITCODE
 }
 finally {
